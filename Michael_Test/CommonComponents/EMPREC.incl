@@ -1,0 +1,34 @@
+ /*                                                               */
+  /*      EMPLOYEE RECORD WORK_AREA.  EMPLOYEE DATA IS REDEFINED   */
+  /*      BASED ON ONE OF THE 3 EMPLOYEE TYPES, HOURLY, SALES OR   */
+  /*      MANAGEMENT.                                              */
+  /*                                                               */
+  DCL 1  EMPLOYEE_WORK_AREA,
+         5  WA_EMP_NUM            PIC'99999',
+         5  WA_EMP_TYPE           CHAR(1),
+         5  WA_EMP_REGION         PIC'9',
+         5  WA_EMP_NAME           CHAR(15),
+         5  WA_EMP_ADDRESS,
+            10  WA_EMP_STREET     CHAR(15),
+            10  WA_EMP_CITY       CHAR(8),
+            10  WA_EMP_STATE      CHAR(2),
+            10  WA_EMP_ZIP        CHAR(9),
+         5  WA_HOURLY_EMPLOYEE_DATA,
+            10  WA_EMP_HOURS      PIC'99',
+            10  WA_EMP_RATE       FIXED DEC(5,2),
+            10  FILLER            CHAR(8),
+         5  WA_EMP_HIRE_DATE,
+             10  WA_EMP_HIRE_YY    PIC'99',
+             10  WA_EMP_HIRE_MM    PIC'99',
+             10  WA_EMP_HIRE_DD    PIC'99',
+        5  FILLER                  CHAR(5);
+   DCL PTR1 POINTER;
+   PTR1 = ADDR(WA_HOURLY_EMPLOYEE_DATA);
+   DCL 1 WA_SALES_EMPLOYEE_DATA BASED(PTR1),
+            10  WA_SALES_SALARY   FIXED DEC(7,2),
+            10  WA_SALES_AMOUNT   PIC'99999V99',
+            10  FILLER            CHAR(2);
+   DCL 1 WA_MGMT_EMPLOYEE_DATA  BASED(PTR1),
+            10  WA_MGMT_SALARY    FIXED DEC(7,2),
+            10  FILLER            CHAR(9);
+ 
