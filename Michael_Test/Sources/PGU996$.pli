@@ -1,0 +1,145 @@
+ /**
+  * Test-Driver für TOTAL TEST SAMPLE
+  *
+  * @name          TotalTestDriver
+  *
+  * @package       de.kfw
+  *
+  */
+ PGU996$: PROC OPTIONS (MAIN);
+       DCL SYSPRINT                FILE PRINT;
+       DCL SYSIN                   FILE RECORD INPUT;
+     %include umgebung;
+
+    %INCLUDE PGU996;
+
+      %dcl xx char;
+      %xx = '1';
+      %if xx %then %do;
+        dcl undef char(02);
+        undef = '42';
+      %end;
+      
+    put skip list (undef);
+    
+  /*
+    %dcl c8 char;
+    %c8 = 'char(08)';
+    */
+    dcl dat1 c8;
+    dcl dat2 char(08);
+    
+    dcl buffer  char(1000) var;
+    dcl a       pointer;
+    dcl n       fixed bin(31);
+    dcl r       bin fixed(31);
+
+    dcl b(3)    fixed bin;
+    dcl b1      ctl type tilgungsrate;
+    dcl 1 b2,
+       5 TILGUNGSBETRAG                             TYPE GELDBETRAG,
+       5 TILGUNGSDATUM                              TYPE DATUM;
+
+    buffer = utf8( ' [ 2, 3, 5 ]', 1141 );
+    a = addrdata(buffer);
+    n = length(buffer);
+
+    r = jsonGetValue( a, n, b );
+    put skip data(b);
+
+    dcl uml char(4);
+    uml = "öÖßä";
+    put skip list(uml, hex(uml));
+
+    buffer = utf8(
+     ' [{"TILGUNGSBETRAG": 100 , "TILGUNGSDATUM": "'!!uml!!'0101"  }, '
+      !!  ' {"TILGUNGSBETRAG": 200 , "TILGUNGSDATUM": "20240201"  } ] ',
+                    1141 );
+    a = addrdata(buffer);
+    n = length(buffer);
+
+    put skip list(hex(buffer));
+
+    r = jsongetarraystart( a, n);
+    do while (jsongetarrayend(a+r, n-r) = 0);
+        r += jsongetvalue(a+r, n-r, b2);
+        r += jsongetcomma(a+r, n-r);
+        alloc b1;
+        b1.tilgungsbetrag = b2.tilgungsbetrag;
+        b1.tilgungsdatum = b2.tilgungsdatum;
+        put skip list(b1.tilgungsbetrag, b1.tilgungsdatum);
+        put skip list(b1.tilgungsdatum, hex(b1.tilgungsdatum));
+    end;
+
+       DCL SATZ_SYSIN                CHAR(80);
+       DCL EOF_SYSIN                 BIT(1) INIT('0'b);
+       ON ENDFILE (SYSIN) EOF_SYSIN = '1'b;
+
+       DCL 1 SATZ_IN BASED(ADDR(SATZ_SYSIN)),
+              5 ART                              CHAR(1),
+              5 FILLER1                          CHAR(1),
+              5 DATEN                            CHAR(70);
+
+       dcl arr(50) char(80) varying;
+       dcl inp char(80) varying;
+       dcl i bin fixed(31);
+       dcl p bin fixed(31);
+       dcl plan (*) ctl type tilgungsrate;
+       dcl 1 planOld (*) ctl,
+                     5 datum char(8),
+                     5 betrag dec fixed(15, 2);
+
+       dcl dat type datum;
+       dcl rate type geldbetrag;
+       dcl ges type geldbetrag;
+
+       open file(sysin);
+       read file(sysin) into (satz_sysin);
+       do while (^eof_sysin);
+          arr(*) = '';
+          inp = trim(satz_in.daten);
+          i = 1;
+          do until (p = 0);
+            p = index(inp, ' ');
+            arr(i) = inp;
+            if p > 0 then do;
+              arr(i) = substr(inp, 1, p - 1);
+              inp = substr(inp, p + 1);
+            end;
+            i = i + 1;
+          end;
+
+          put skip list(satz_sysin);
+          select(satz_in.art);
+            when ('1') put skip list(total_test_summe(
+                              decimal(arr(1), 15, 2),
+                              decimal(arr(2), 15, 2)));
+            when ('2') put skip list(total_test_summe(
+                              binary(arr(1), 31),
+                              binary(arr(2), 31)));
+            when ('3') put skip list(total_test_summe_type(
+                              decimal(arr(1), 15, 2),
+                              decimal(arr(2), 15, 2)));
+            when ('4') do;
+                call total_test_tilgungsplan(char(arr(1), 8),
+                                          decimal(arr(2), 15, 2),
+                                          decimal(arr(3), 15, 2),
+                                          planOld);
+                put skip data(planOld);
+            end;
+            when ('5') do;
+                dat = char(arr(1), 8);
+                rate = decimal(arr(2), 15, 2);
+                ges = decimal(arr(3), 15, 2);
+                call total_test_tilgungsplan_type(dat,
+                                      rate, ges, plan);
+                do i = 1 to dim(plan);
+                  put skip list(plan(i).tilgungsdatum,
+                                 plan(i).tilgungsbetrag);
+                end;
+            end;
+            other;
+          end;
+          read file(sysin) into (satz_sysin);
+       end;
+ END_PGU996$: END PGU996$;
