@@ -1,5 +1,5 @@
 #Project Configuration
-#Mon Jun 02 16:48:12 CEST 2025
+#Mon Jun 02 17:00:19 CEST 2025
 copybooks.host=cwcc.bmc.com\:16196
 mainframe.copybooks.enabled=true
 codepage=1047 - Latin 1 (Open Systems)
