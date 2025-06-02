@@ -7,6 +7,5 @@
 	<buildSpec>
 	</buildSpec>
 	<natures>
-		<nature>com.compuware.frameworks.hostservices.copybooks.local.localCopybooksNature</nature>
 	</natures>
 </projectDescription>
