@@ -5,30 +5,25 @@
   *
   * @package       de.kfw
   *
-  *
   */
  PGU996$: PROC OPTIONS (MAIN);
        DCL SYSPRINT                FILE PRINT;
        DCL SYSIN                   FILE RECORD INPUT;
-     %include umgebung;
+    %xinclude umgebung;
 
     %INCLUDE PGU996;
 
-      %dcl xx char;
-      %xx = '1';
-      %if xx %then %do;
-        dcl undef char(02);
-        undef = '42';
-      %end;
-      
-    put skip list (undef);
-    
-  /*
+    %dcl xx char;
+    %xx = '1';
+    %if xx %then %do;
+      undef=42;
+    %end;
+ 
     %dcl c8 char;
     %c8 = 'char(08)';
-    */
-    dcl dat1 c8;
-    dcl dat2 char(08);
+   
+    dcl dat1 c81;
+    
     
     dcl buffer  char(1000) var;
     dcl a       pointer;

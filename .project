@@ -3,10 +3,18 @@
 	<name>Michael</name>
 	<comment></comment>
 	<projects>
+		<project>Common</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
 	<natures>
 		<nature>com.compuware.frameworks.hostservices.copybooks.local.localCopybooksNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Includes</name>
+			<type>2</type>
+			<location>C:/Users/rnuesse/Desktop/Temp/KfW/AllIncludes/HDDRXM0.DEMO.PLI.COPY</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -2,13 +2,12 @@
  /*                 INCLUDE - MEMBER F]R PGU996                */
  /*********************************************************************/
 
-    %IF NOT_DEFINED ('PGU996')
+    %IF NOT_DEFINED ('PGU997')
     %THEN %DO;
 
    /**
     * Geldbetrag (Dezimalzahl mit zwei Nachkommastellen und dreizehn
     * Vorkommastellen)
-    * NEW COMMENT
     */
    DEFINE ALIAS GELDBETRAG                   DEC FIXED (15,2);
 

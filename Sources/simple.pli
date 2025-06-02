@@ -1,0 +1,9 @@
+ SIMPLE: PROC OPTIONS (MAIN);
+     %xinclude PP0057;
+     %xinclude PGU9971;
+
+    dcl 1 b2,
+       5 TILGUNGSBETRAG                             TYPE GELDBETRAG,
+       5 TILGUNGSDATUM                              TYPE DATUM;
+ 
+ END SIMPLE; 

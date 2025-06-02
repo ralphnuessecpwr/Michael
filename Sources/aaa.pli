@@ -1,0 +1,4 @@
+ aaa:proc;
+  %include umgebung;
+  dcl ddd char(1);
+ end aaa;

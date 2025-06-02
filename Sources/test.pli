@@ -1,0 +1,5 @@
+ TEST: PROC OPTIONS(MAIN);
+   define alias MY_TYPE char(21);
+   DCL MY_TEXT TYPE MY_TYPE;
+ 
+ END TEST;

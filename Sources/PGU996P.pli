@@ -1,0 +1,127 @@
+ /**
+  * PL/I Demo Unterprogramm als Case f�r TotalTest
+  *
+  * @name          Sample for TotalTest
+  *
+  * @package       de.kfw
+  * @visibility    de.kfw.*
+  *
+  */
+
+       %xinclude umgebung;
+ PGU996: PACKAGE EXPORTS(PGU9961, PGU9962, PGU9963, PGU9964, PGU9965);
+
+        %INCLUDE PGU996;
+
+ PGU9961: PROC (summand1, summand2) returns (dec fixed(15, 2));
+
+        dcl summand1 dec fixed(15, 2);
+        dcl summand2 dec fixed(15, 2);
+
+        return(summand1 + summand2);
+
+ END_PGU9961: END PGU9961;
+
+ PGU9962: PROC (summand1, summand2) returns (bin fixed(31));
+
+        dcl summand1 bin fixed(31);
+        dcl summand2 bin fixed(31);
+
+        return(summand1 + summand2);
+
+ END_PGU9962: END PGU9962;
+
+ PGU9963: PROC (summand1, summand2) returns (TYPE GELDBETRAG);
+
+        dcl summand1 TYPE GELDBETRAG;
+        dcl summand2 TYPE GELDBETRAG;
+
+        return(summand1 + summand2);
+
+ END_PGU9963: END PGU9963;
+
+ PGU9964: PROC (datum, rate, ges, plan);
+
+        dcl datum char(8);
+        dcl rate dec fixed(15, 2);
+        dcl ges dec fixed(15, 2);
+        dcl 1 plan (*) ctl,
+              5 datum char(8),
+              5 betrag dec fixed(15, 2);
+
+        dcl d char(8);
+        dcl m pic '99' based(pointeradd(addr(d), 4));
+        dcl j pic '9999' based(addr(d));
+        dcl stack ctl like plan;
+        dcl rest dec fixed(15, 2);
+        dcl i bin fixed(31);
+
+        do while(allocn(plan) > 0);
+          free plan;
+        end;
+
+        rest = ges;
+        d = datum;
+        do while(rest > 0);
+          alloc stack;
+          stack.datum = d;
+          stack.betrag = min (rest, rate);
+          rest = rest - stack.betrag;
+          m = m + 1;
+          if m = 13 then do;
+            m = 1;
+            j = j + 1;
+          end;
+        end;
+
+        alloc plan(allocn(stack));
+        do i = allocn(stack) to 1 by -1;
+          plan(i) = stack;
+          free stack;
+        end;
+
+ END_PGU9964: END PGU9964;
+
+
+ PGU9965: PROC (datum, rate, ges, plan);
+
+        dcl datum TYPE DATUM;
+        dcl rate TYPE GELDBETRAG;
+        dcl ges TYPE GELDBETRAG;
+        dcl 1 plan (*) ctl TYPE TILGUNGSRATE;
+
+        dcl d char(8);
+        dcl m pic '99' based(pointeradd(addr(d), 4));
+        dcl j pic '9999' based(addr(d));
+        dcl stack ctl TYPE TILGUNGSRATE;
+        dcl rest type geldbetrag;
+        dcl i bin fixed(31);
+
+        do while (allocn(plan) > 0);
+          free plan;
+        end;
+
+        rest = ges;
+        d = datum;
+        do while (rest > 0);
+          alloc stack;
+          stack.tilgungsdatum = d;
+          stack.tilgungsbetrag = min (rest, rate);
+          rest = rest - stack.tilgungsbetrag;
+          m = m + 1;
+          if m = 13 then do;
+            m = 1;
+            j = j + 1;
+          end;
+        end;
+
+        alloc plan(allocn(stack));
+        do i = allocn(stack) to 1 by -1;
+          plan(i) = stack;
+          free stack;
+        end;
+
+ END_PGU9965: END PGU9965;
+
+
+ END PGU996;
